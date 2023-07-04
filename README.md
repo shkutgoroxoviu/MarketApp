@@ -1,2 +1,5 @@
 # MarketApp
-an application with categories, in each category of dishes that can be sent to the cart
+приложение с категориям, в каждой категории блюда, которые можно отправить в корзину. архитектура VIPER
+
+# Результат
+![Запись экрана 2023-07-04 в 12 35 03](https://github.com/shkutgoroxoviu/MarketApp/assets/112491700/a7ee1f2d-62bf-461d-ab5d-94674f0f8fb8)
