@@ -196,9 +196,9 @@ extension BasketListView: UITableViewDelegate, UITableViewDataSource {
        
         updateButtonTitle(totalCost: Double(calculatePriceDishes(price: Int(dish.price))))
         
-        counter = Int(dish.counter)
+        cell.delegateIncrement = self
+        cell.delegateDecrement = self
         
-        cell.delegate = self
         cell.config(model: model)
         return cell
     }
@@ -214,8 +214,8 @@ extension BasketListView: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension BasketListView: DidTapStepper {
-    func didTap(value: Int, cell: BasketListCell) {
+extension BasketListView: DidTapIncrement {
+    func didTapIncrement(value: Int, cell: BasketListCell) {
         guard let indexPath = basketList.indexPath(for: cell) else { return }
         
         counter += Int(presenter?.dishes[indexPath.section].counter ?? 0)
@@ -228,14 +228,20 @@ extension BasketListView: DidTapStepper {
         
         guard let presenter = presenter else { return }
         guard presenter.dishes.isEmpty != true else { return }
-   
-        if counter > value {
-            updateButtonTitle(totalCost: Double(decrementTotalCost(price: Int(presenter.dishes[indexPath.section].price))))
-        } else {
-            totalCost += calculatePriceDishes(price: Int(presenter.dishes[indexPath.section].price))
-            updateButtonTitle(totalCost: Double(totalCost))
-        }
         
+        totalCost += calculatePriceDishes(price: Int(presenter.dishes[indexPath.section].price))
+        updateButtonTitle(totalCost: Double(totalCost))
+        
+        zeroingOut()
+    }
+}
+
+
+extension BasketListView: DidTapDecrement {
+    func didTapDecrement(value: Int, cell: BasketListCell) {
+        guard let indexPath = basketList.indexPath(for: cell) else { return }
+        updateButtonTitle(totalCost: Double(decrementTotalCost(price: Int(presenter?.dishes[indexPath.section].price ?? 0))))
+        presenter?.deleteCell(value: value, name: (presenter?.dishes[indexPath.section].dishName ?? ""), index: indexPath.section)
         zeroingOut()
     }
 }

@@ -8,14 +8,19 @@
 import Foundation
 import UIKit
 
-protocol DidTapStepper: AnyObject {
-    func didTap(value: Int, cell: BasketListCell)
+protocol DidTapIncrement: AnyObject {
+    func didTapIncrement(value: Int, cell: BasketListCell)
+}
+
+protocol DidTapDecrement: AnyObject {
+    func didTapDecrement(value: Int, cell: BasketListCell)
 }
 
 final class BasketListCell: UITableViewCell {
     static let reuseID = "BasketListCell"
     
-    weak var delegate: DidTapStepper?
+    weak var delegateIncrement: DidTapIncrement?
+    weak var delegateDecrement: DidTapDecrement?
     
     private lazy var dishImage: CustomImageView = {
         let image = CustomImageView()
@@ -53,7 +58,7 @@ final class BasketListCell: UITableViewCell {
     private lazy var dishStepper: UIStepper = {
         let stepper = UIStepper()
         stepper.minimumValue = 0
-        stepper.maximumValue = 10
+        stepper.maximumValue = 100
         stepper.stepValue = 1
         stepper.value = 0
         stepper.isContinuous = true
@@ -67,6 +72,8 @@ final class BasketListCell: UITableViewCell {
 
         return label
     }()
+    
+    var previousValue: Double = 0.0
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -133,6 +140,14 @@ final class BasketListCell: UITableViewCell {
         let value = sender.value
         print("New value: \(value)")
         counter.text = String(Int(value))
-        delegate?.didTap(value: Int(value), cell: self)
+//        delegateIncrement?.didTapIncrement(value: Int(value), cell: self)
+        
+        if sender.value > previousValue {
+            delegateIncrement?.didTapIncrement(value: Int(value), cell: self)
+        } else {
+            delegateDecrement?.didTapDecrement(value: Int(value), cell: self)
+        }
+        
+        previousValue = value
     }
 }

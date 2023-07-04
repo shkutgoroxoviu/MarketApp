@@ -149,7 +149,7 @@ final class DishesListView: UIViewController, DishesListViewProtocol {
     
     private func configureLayoutDishesList() -> UICollectionViewCompositionalLayout {
         let size = NSCollectionLayoutSize(
-            widthDimension: .absolute(115),
+            widthDimension: .absolute((view.frame.width / 3) - 15),
             heightDimension: .estimated(170)
         )
         
